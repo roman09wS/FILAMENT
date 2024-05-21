@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('code');
             $table->string('name');
-            $table->decimal('price', $totalDigits = 10, $decimalPlaces = 2);
-            $table->integer('stock');
+            $table->decimal('price', $totalDigits = 10, $decimalPlaces = 2)->nullable()->default(0,00);
+            $table->integer('stock')->default(0);
             $table->tinyInteger('product_status')->default(1);
             $table->timestamps();
         });
