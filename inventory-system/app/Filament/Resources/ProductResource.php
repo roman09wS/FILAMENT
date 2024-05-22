@@ -10,8 +10,11 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\RawJs;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -19,29 +22,39 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-archive-box';
+    protected static ?string $navigationGroup = 'Productos del sistema';
+    
+    protected static ?string $navigationLabel = 'Productos';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->unique()
-                    ->length(8)
-                    ->placeholder('codigo del producto')
-                    ->numeric(),
-                Forms\Components\TextInput::make('name')
-                    ->placeholder('nombre del producto')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('price')
-                    ->mask(RawJs::make('$money($input)'))
-                    ->stripCharacters(',')
-                    ->numeric()
-                    ->prefix('$'),
-                Forms\Components\Toggle::make('product_status')
-                    ->default(true),
+
+                Section::make('Product Info')
+                ->columns(3)
+                ->schema([
+                    Hidden::make('oldNumber')
+                    ->default(99999999),
+                    Forms\Components\TextInput::make('code')
+                        ->required()
+                        ->unique()
+                        ->hiddenOn('edit')
+                        ->placeholder('codigo del producto')
+                        ->numeric(),
+                    Forms\Components\TextInput::make('name')
+                        ->placeholder('nombre del producto')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('price')
+                        ->mask(RawJs::make('$money($input)'))
+                        ->stripCharacters(',')
+                        ->numeric()
+                        ->prefix('$'),
+                    Forms\Components\Toggle::make('product_status')
+                        ->default(true),
+                ])
             ]);
     }
 
@@ -83,6 +96,13 @@ class ProductResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateActions([
+                Action::make('create')
+                    ->label('Crear producto')
+                    ->url('products/create')
+                    ->icon('heroicon-m-plus')
+                    ->button(),
             ])
             ->reorderable('name');
     }
