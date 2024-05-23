@@ -13,14 +13,10 @@ return new class extends Migration
     {
         Schema::create('inventory_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('inventory_id');
             $table->unsignedBigInteger('product_id');
-
             $table->decimal('unit_cost', $totalDigits = 10, $decimalPlaces = 2);
             $table->integer('quantity');
-
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->foreign('inventory_id')->references('id')->on('inventory_registers')->onDelete('cascade');
             $table->timestamps();
         });
     }
