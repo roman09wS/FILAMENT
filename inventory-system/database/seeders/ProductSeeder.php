@@ -14,19 +14,19 @@ class ProductSeeder extends Seeder
     {
         Product::create([
             'code' => 1001,
-            'name' => 'Refrigerador',
+            'name' => 'Leche',
             'price' => 0,
         ]);
 
         Product::create([
             'code' => 1002,
-            'name' => 'Licuadora',
+            'name' => 'Arroz',
             'price' => 0,
         ]);
 
         Product::create([
             'code' => 1003,
-            'name' => 'Televisor',
+            'name' => 'Azucar',
             'price' => 0,
         ]);
 

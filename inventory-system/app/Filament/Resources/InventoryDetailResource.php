@@ -30,6 +30,7 @@ class InventoryDetailResource extends Resource
                 ->schema([
                     Forms\Components\Select::make('product_id')
                         ->relationship('products', 'name')
+                        ->hiddenOn('edit')
                         ->required(),
                     Forms\Components\TextInput::make('unit_cost')
                         ->mask(RawJs::make('$money($input)'))
@@ -48,13 +49,19 @@ class InventoryDetailResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('unit_cost')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('quantity')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('products.name')
+                ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
