@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Filament\Resources;
-
+use App\Models\Product;
+use App\Models\InventoryDetail;
 use App\Filament\Resources\InventoryDetailResource\Pages;
 use App\Filament\Resources\InventoryDetailResource\RelationManagers;
-use App\Models\InventoryDetail;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Support\RawJs;
@@ -20,6 +21,7 @@ class InventoryDetailResource extends Resource
     protected static ?string $model = InventoryDetail::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Inventory Entry';
 
     public static function form(Form $form): Form
     {
@@ -28,9 +30,12 @@ class InventoryDetailResource extends Resource
                 Section::make('Inventory entry')
                 ->columns(3)
                 ->schema([
-                    Forms\Components\Select::make('product_id')
-                        ->relationship('products', 'name')
+                    Select::make('product_id')
+                        ->label('Products')
                         ->hiddenOn('edit')
+                        ->searchable()
+                        ->native(false)
+                        ->options(fn (): array => Product::whereDoesntHave('inventoryDetails')->where('product_status',1)->pluck('name', 'id')->toArray() )
                         ->required(),
                     Forms\Components\TextInput::make('unit_cost')
                         ->mask(RawJs::make('$money($input)'))
@@ -53,7 +58,7 @@ class InventoryDetailResource extends Resource
                 ->searchable(),
                 Tables\Columns\TextColumn::make('quantity')
                 ->searchable(),
-                Tables\Columns\TextColumn::make('products.name')
+                Tables\Columns\TextColumn::make('product.name')
                 ->searchable(),
             ])
             ->filters([
