@@ -25,5 +25,34 @@ class InventoryDetail extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public static function boot()
+    {
+        parent::boot();
+        
+        static::created(function ($inventorydetail) {
+            $product = $inventorydetail->product;
+            $product->stock = $inventorydetail->quantity;
+            $product->save();
+            
+        });
+
+        static::updated(function ($inventorydetail){
+            $product = $inventorydetail->product;
+            $product->stock = $inventorydetail->quantity;
+            $product->save();
+        });
+
+        static::deleted(function ($inventorydetail){
+            $product = $inventorydetail->product;
+            $product->stock = 0;
+            $product->save();
+        });
+        
+
+
+    }
+
+
+
 
 }

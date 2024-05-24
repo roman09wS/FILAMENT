@@ -42,6 +42,15 @@ class Product extends Model
         return $this->hasMany(Sale::class);
     }
 
+    // public static function boot()
+    // {
+    //     parent::boot();
 
+    //     static::updated(function ($product) {
+    //         $inventoryDetail = $product->inventoryDetail;
+    //         $inventoryDetail->quantity = 999;
+    //         $inventoryDetail->save();
+    //     });
+    // }
 
 }
